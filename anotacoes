@@ -1,0 +1,9 @@
+-temperatura:  var1 e grafico de linha (salvar historico)
+
+-umidade: var0 e grafico de linha (salvar historico)
+
+-profundidade (metros): sonda de profunndidade (salvar historico)
+
+-data e hora: epoch (salvar historico)
+
+-hidrometro (m cubicos): hidrometro com grafico de barra (salvar historico)
