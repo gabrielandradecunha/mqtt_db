@@ -4,65 +4,48 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_mac():
+def get_connection():
     dbname = os.getenv('DB_NAME')
     db_user = os.getenv('DB_USER')
     password = os.getenv('DB_PASSWORD')
     host = os.getenv('DB_HOST')
     port = os.getenv('DB_PORT')
-
     database_url = f"postgresql://{db_user}:{password}@{host}:{port}/{dbname}"
+    return psycopg2.connect(database_url)
 
+
+def insert_telemetry(unix, latitude, longitude, course, speed,
+                     altitude, pitch, roll, accelMagnitude,
+                     maxDeltaAccel, power_status, error_status):
+    """
+    Insere um pacote de telemetria na tabela 'telemetria'.
+    """
     try:
-        connection = psycopg2.connect(database_url)
+        connection = get_connection()
         print("Connection with DB established...")
     except psycopg2.Error as e:
         print(f"Error connecting to database: {e}")
         return
 
     cursor = connection.cursor()
-    query = "SELECT mac FROM reservatorios"
+    query = """
+        INSERT INTO telemetria (
+            unix, latitude, longitude, course, speed, altitude,
+            pitch, roll, accel_magnitude, max_delta_accel,
+            power_status, error_status
+        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    """
 
     try:
-        cursor.execute(query)
-        macs = cursor.fetchall()
-        mac_list = [mac[0] for mac in macs]
-        return mac_list
-    except Exception as e:
-        print(f"Error executing query: {e}")
-    finally:
-        cursor.close()
-        if connection:
-            connection.close()
-
-def update_db(mac_adress, new_vol, umidade, temperatura, profundidade):
-    dbname = os.getenv('DB_NAME')
-    db_user = os.getenv('DB_USER')
-    password = os.getenv('DB_PASSWORD')
-    host = os.getenv('DB_HOST')
-    port = os.getenv('DB_PORT')
-
-    database_url = f"postgresql://{db_user}:{password}@{host}:{port}/{dbname}"
-
-    try:
-        connection = psycopg2.connect(database_url)
-        print("Connection with DB established...")
-    except psycopg2.Error as e:
-        print(f"Error connecting to database: {e}")
-        return
-
-    cursor = connection.cursor()
-    query = "UPDATE reservatorios SET volume_atual=%s, umidade=%s, profundidade=%s, temperatura=%s WHERE mac=%s"
-
-    try:
-        cursor.execute(query, (new_vol, umidade, profundidade, temperatura, mac_adress))
+        cursor.execute(query, (
+            unix, latitude, longitude, course, speed,
+            altitude, pitch, roll, accelMagnitude,
+            maxDeltaAccel, power_status, error_status
+        ))
         connection.commit()
-        if cursor.rowcount > 0:
-            print(f"Volume atualizado com sucesso para o reservatório com o mac {mac_adress}. Novo volume: {new_vol}")
-        else:
-            print(f"Nenhum reservatório encontrado com o mac {mac_adress}. Nenhuma atualização realizada.")
+        print(f"Pacote de telemetria inserido com sucesso (unix={unix})")
     except Exception as e:
-        print(f"Erro ao atualizar o banco de dados: {e}")
+        print(f"Erro ao inserir telemetria: {e}")
         connection.rollback()
     finally:
         cursor.close()

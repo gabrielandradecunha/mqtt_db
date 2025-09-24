@@ -1,0 +1,15 @@
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=127.0.0.1
+DB_PORT=5432
+
+# table for program
+TABLE_ID=1
+
+# mosquitto credentias
+MOSQUITTO_USER='teste'
+MOSQUITTO_PASSWORD='teste'
+MOSQUITTO_HOST='127.0.0.1'
+MOSQUITTO_PORT='1883'
+MOSQUITTO_TOPIC='reservatorio/volume'

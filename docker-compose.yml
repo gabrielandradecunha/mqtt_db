@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_monit
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - monit
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  monit:
+    driver: bridge
