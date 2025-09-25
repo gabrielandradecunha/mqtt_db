@@ -1,4 +1,4 @@
-# mqtt_db
+# Broker to database
 
 Script para extrair dados de um broker MQTT e inserir em banco de dados relacional.
 
