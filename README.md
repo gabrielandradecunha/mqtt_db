@@ -50,26 +50,3 @@ Execute o script `init.sql` no seu banco para criar as tabelas, triggers e funç
 
    ```bash
    python3 .
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
